@@ -6,13 +6,20 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-#[macro_use]
-mod utilities;
+use lazy_static::lazy_static;
 
-mod pubkey;
-pub use pubkey::PubKey;
+pub(self) use secp256k1_kernel as kernel;
 
-pub mod address;
+lazy_static! {
+    pub(self) static ref SECP256K1: kernel::Secp256k1<kernel::All> = kernel::Secp256k1::new();
+}
 
-pub mod blake2b;
-pub mod secp256k1;
+mod public;
+mod secret;
+
+pub use kernel::Error;
+pub use public::PublicKey;
+pub use secret::SecretKey;
+
+#[cfg(test)]
+mod tests;
