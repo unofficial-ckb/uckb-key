@@ -5,3 +5,6 @@ authors = ["Boyu Yang <yangby@cryptape.com>"]
 edition = "2018"
 
 [dependencies]
+
+[badges]
+travis-ci = { repository = "yangby-cryptape/ckb-key" }
