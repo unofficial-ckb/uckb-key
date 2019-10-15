@@ -1,0 +1,66 @@
+name: CKB Key
+version: "0.1.0"
+about: |
+    [Unofficial] Lightweight CKB key utilities.
+author: Boyu Yang <yangby@cryptape.com>
+settings:
+        - SubcommandRequired
+subcommands:
+    - key:
+        about: Generate a new key or parse an existed key.
+        args:
+            - secret:
+                help: Provide an existed secret / private key. (a 0x-prefix hexadecimal string)
+                long: secret
+                takes_value: true
+                required: false
+    - addr:
+        about: Generate or parse an address.
+        args:
+            - network:
+                help: The network of CKB.
+                long: network
+                takes_value: true
+                possible_values:
+                    - mainnet
+                    - testnet
+                default_value: mainnet
+            - code-hash-index:
+                help: The index of the selected code hash.
+                long: code-hash-index
+                takes_value: true
+                possible_values:
+                    - secp256k1-blake160
+            - code-hash:
+                help: The code hash for lock script.
+                long: code-hash
+                takes_value: true
+                requires:
+                    - code-hash-type
+            - code-hash-type:
+                help: The type of the input code hash.
+                long: code-hash-type
+                takes_value: true
+                possible_values:
+                    - data
+                    - type
+            - address-args:
+                help: All arguments used to construct an address.
+                multiple: true
+        groups:
+            - addr-payload-format:
+                required: true
+                args:
+                    - code-hash-index
+                    - code-hash
+            - addr-payload-format-index:
+                multiple: true
+                args:
+                    - code-hash-index
+                conflicts_with:
+                    - addr-payload-format-full
+            - addr-payload-format-full:
+                multiple: true
+                args:
+                    - code-hash
+                    - code-hash-type

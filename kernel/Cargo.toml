@@ -1,0 +1,25 @@
+[package]
+name = "ckb-key-kernel"
+version = "0.1.0"
+authors = ["Boyu Yang <yangby@cryptape.com>"]
+edition = "2018"
+
+[dependencies]
+property = "~0.2"
+failure = "~0.1"
+lazy_static = "~1.4"
+faster-hex = "~0.4"
+rand = "~0.6"
+bech32 = "~0.7"
+secp256k1_kernel = { package = "secp256k1", version = "~0.15", features = ["rand", "recovery"] }
+blake2b-rs = "~0.1"
+
+[dev-dependencies]
+slices = "~0.1"
+
+[features]
+default = ["secure"]
+secure = []
+
+[badges]
+travis-ci = { repository = "yangby-cryptape/ckb-key" }
