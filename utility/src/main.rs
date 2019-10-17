@@ -15,6 +15,8 @@ fn execute() -> error::Result<()> {
     match config {
         config::AppConfig::Key(args) => subcmd::key::execute(args),
         config::AppConfig::Addr(args) => subcmd::addr::execute(args),
+        config::AppConfig::Hash(args) => subcmd::hash::execute(args),
+        config::AppConfig::Sign(args) => subcmd::sign::execute(args),
     };
     Ok(())
 }

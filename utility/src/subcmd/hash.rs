@@ -6,23 +6,13 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-#[macro_use]
-mod utilities;
+use ckb_key_kernel::{blake2b, HashAlgo};
 
-mod pubkey;
-pub use pubkey::PubKey;
+use crate::config::HashArgs;
 
-pub mod address;
-
-pub mod blake2b;
-pub mod secp256k1;
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum HashAlgo {
-    Blake2b256,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum SignAlgo {
-    Secp256k1(secp256k1::SecretKey),
+pub(crate) fn execute(args: HashArgs) {
+    let output = match args.algo() {
+        HashAlgo::Blake2b256 => blake2b::blake2b_256(args.input()),
+    };
+    println!("output = {}", faster_hex::hex_string(&output[..]).unwrap());
 }

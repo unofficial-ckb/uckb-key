@@ -7,8 +7,13 @@
 // except according to those terms.
 
 use bech32::{FromBase32, ToBase32};
-use failure::Fail;
 use property::Property;
+
+pub mod error;
+use error::{Error, Result};
+
+#[cfg(test)]
+mod tests;
 
 pub const CODE_HASH_SIZE: usize = 32;
 
@@ -64,31 +69,6 @@ pub struct AddressBuilder {
     code_hash: CodeHash,
     args: Vec<Vec<u8>>,
 }
-
-#[derive(Debug, Fail)]
-pub enum Error {
-    #[fail(display = "there should be only one but found {} arguments", number)]
-    NotSingleArg { number: usize },
-    #[fail(display = "the size(={}) of hash is not match", length)]
-    HashSize { length: usize },
-    #[fail(
-        display = "the length(={}) of the No.{} argument is overflow",
-        length, index
-    )]
-    ArgOverflow { index: usize, length: usize },
-    #[fail(display = "bech32 error: {}", _0)]
-    Bech32(bech32::Error),
-    #[fail(display = "unknown network: {}", _0)]
-    UnknownNetwork(String),
-    #[fail(display = "unknown payload format: {}", _0)]
-    UnknownPayloadFormat(u8),
-    #[fail(display = "unknown code hash index: {}", _0)]
-    UnknownCodeHashIndex(u8),
-    #[fail(display = "invalid data since offset {}", _0)]
-    InvalidDataSince(usize),
-}
-
-pub(crate) type Result<T> = ::std::result::Result<T, Error>;
 
 impl Default for Network {
     fn default() -> Self {
@@ -366,47 +346,5 @@ impl AddressBuilder {
             code_hash,
             args,
         })
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use slices::u8_slice;
-    use std::str::FromStr;
-
-    #[test]
-    fn test_short() {
-        let pk = u8_slice!("0x13e41d6f9292555916f17b4882a5477c01270142");
-        let expected = "ckb1qyqp8eqad7ffy42ezmchkjyz54rhcqf8q9pqrn323p";
-        let addr = super::AddressBuilder::default()
-            .args(vec![pk.to_vec()])
-            .build()
-            .unwrap();
-        let actual = addr.to_string();
-        assert_eq!(expected, actual);
-        let addr = super::Address::from_str(&actual).unwrap();
-        let actual = addr.to_string();
-        assert_eq!(expected, actual);
-    }
-
-    #[test]
-    fn test_full() {
-        let code_hash =
-            u8_slice!("0x48a2ce278d84e1102b67d01ac8a23b31a81cc54e922e3db3ec94d2ec4356c67c");
-        let arg0 = u8_slice!("0xdde7801c073dfb3464c7b1f05b806bb2bbb84e99");
-        let arg1 = u8_slice!("0x00c1ddf9c135061b7635ca51e735fc2b03cee339");
-        let expected = "ckb1\
-                        qfy29n383kzwzyptvlgp4j9z8vc6s8x9f6fzu0dnaj2d9mzr2mr8c9xau7qpcpe\
-                        alv6xf3a37pdcq6ajhwuyaxg5qrqam7wpx5rpka34efg7wd0u9vpuaceeu5fsh5";
-        let addr = super::AddressBuilder::default()
-            .code_hash_by_data(super::CodeHashType::Data, (&code_hash[..]).to_owned())
-            .args(vec![arg0.to_vec(), arg1.to_vec()])
-            .build()
-            .unwrap();
-        let actual = addr.to_string();
-        assert_eq!(expected, actual);
-        let addr = super::Address::from_str(&actual).unwrap();
-        let actual = addr.to_string();
-        assert_eq!(expected, actual);
     }
 }

@@ -10,7 +10,7 @@ subcommands:
         about: Generate a new key or parse an existed key.
         args:
             - secret:
-                help: Provide an existed secret / private key. (a 0x-prefix hexadecimal string)
+                help: Provide an existed secret / private key (a hexadecimal string).
                 long: secret
                 takes_value: true
                 required: false
@@ -64,3 +64,34 @@ subcommands:
                 args:
                     - code-hash
                     - code-hash-type
+    - hash:
+        about: Calculate hash for the input.
+        args:
+            - hash-algo:
+                help: The hash algorithm.
+                long: hash-algo
+                takes_value: true
+                possible_values:
+                    - blake2b256
+                required: true
+            - hash-input:
+                help: Provide a hexadecimal string.
+                required: true
+    - sign:
+        about: Constructs a signature for input.
+        args:
+            - secret:
+                help: Provide an existed secret / private key (a hexadecimal string).
+                long: secret
+                takes_value: true
+                required: true
+            - sign-algo:
+                help: The signature algorithm.
+                long: sign-algo
+                takes_value: true
+                possible_values:
+                    - secp256k1
+                required: true
+            - sign-input:
+                help: Provide a hexadecimal string.
+                required: true

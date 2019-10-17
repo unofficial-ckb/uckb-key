@@ -18,9 +18,9 @@ pub(crate) fn execute(args: KeyArgs) {
     let pk = sk.public_key();
     let key = pk.pubkey_blake160();
     println!("Secp256k1 + Blake160:\n");
-    println!("    secret  = 0x{}", sk);
-    println!("    public  = 0x{}", pk);
-    println!("    key     = 0x{}", key);
+    println!("    secret  = {}", sk);
+    println!("    public  = {}", pk);
+    println!("    key     = {}", key);
     println!(
         "\nNOTICE:\n\n    \
          This utility is very simple, it just prints the secret key to the screen.\n\n    \

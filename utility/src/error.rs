@@ -17,7 +17,7 @@ pub(crate) enum Error {
     #[fail(display = "secp256k1 error: {}", _0)]
     Secp256k1(secp256k1::Error),
     #[fail(display = "address error: {}", _0)]
-    Address(address::Error),
+    Address(address::error::Error),
 }
 
 pub(crate) type Result<T> = ::std::result::Result<T, Error>;
@@ -33,4 +33,4 @@ macro_rules! convert_error {
 }
 
 convert_error!(Secp256k1, secp256k1::Error);
-convert_error!(Address, address::Error);
+convert_error!(Address, address::error::Error);

@@ -10,7 +10,7 @@ use std::{ops::Drop, ptr, sync::atomic};
 
 use rand::{rngs::StdRng, thread_rng, Rng, SeedableRng};
 
-use super::{kernel, Error, PublicKey};
+use super::{kernel, Error, PublicKey, Signature, SECP256K1};
 
 #[derive(Clone, PartialOrd, Ord, PartialEq, Eq)]
 pub struct SecretKey(pub(super) kernel::SecretKey);
@@ -57,6 +57,12 @@ impl SecretKey {
         PublicKey::from_secret_key(self)
     }
 
+    pub fn sign_recoverable(&self, input: &[u8]) -> Result<Signature, Error> {
+        kernel::Message::from_slice(input)
+            .map(|msg| (&*SECP256K1).sign_recoverable(&msg, self))
+            .map(Signature)
+    }
+
     pub(crate) fn zeroize(&mut self) {
         let Self(inner) = self;
         let dst = inner.as_mut_ptr();
@@ -65,8 +71,8 @@ impl SecretKey {
             unsafe {
                 ptr::write_volatile(dst.add(of), 0);
             }
+            atomic::compiler_fence(atomic::Ordering::SeqCst);
         }
-        atomic::compiler_fence(atomic::Ordering::SeqCst);
     }
 }
 

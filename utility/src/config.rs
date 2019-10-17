@@ -10,13 +10,15 @@ use std::convert::TryFrom;
 
 use property::Property;
 
-use ckb_key_kernel::{address, secp256k1};
+use ckb_key_kernel::{address, secp256k1, HashAlgo, SignAlgo};
 
 use crate::error::{Error, Result};
 
 pub(crate) enum AppConfig {
     Key(KeyArgs),
     Addr(AddrArgs),
+    Hash(HashArgs),
+    Sign(SignArgs),
 }
 
 #[derive(Property)]
@@ -27,6 +29,18 @@ pub(crate) struct KeyArgs {
 #[derive(Property)]
 pub(crate) struct AddrArgs {
     address: address::Address,
+}
+
+#[derive(Property)]
+pub(crate) struct HashArgs {
+    algo: HashAlgo,
+    input: Vec<u8>,
+}
+
+#[derive(Property)]
+pub(crate) struct SignArgs {
+    algo: SignAlgo,
+    input: Vec<u8>,
 }
 
 pub(crate) fn build_commandline() -> Result<AppConfig> {
@@ -41,6 +55,8 @@ impl<'a> TryFrom<&'a clap::ArgMatches<'a>> for AppConfig {
         match matches.subcommand() {
             ("key", Some(matches)) => KeyArgs::try_from(matches).map(AppConfig::Key),
             ("addr", Some(matches)) => AddrArgs::try_from(matches).map(AppConfig::Addr),
+            ("hash", Some(matches)) => HashArgs::try_from(matches).map(AppConfig::Hash),
+            ("sign", Some(matches)) => SignArgs::try_from(matches).map(AppConfig::Sign),
             _ => unreachable!(),
         }
     }
@@ -111,13 +127,59 @@ impl<'a> TryFrom<&'a clap::ArgMatches<'a>> for AddrArgs {
     }
 }
 
+impl<'a> TryFrom<&'a clap::ArgMatches<'a>> for HashArgs {
+    type Error = Error;
+    fn try_from(matches: &'a clap::ArgMatches) -> Result<Self> {
+        let algo = matches
+            .value_of("hash-algo")
+            .map(|value| match value {
+                "blake2b256" => HashAlgo::Blake2b256,
+                _ => unreachable!(),
+            })
+            .unwrap_or_else(|| unreachable!());
+        let input = matches
+            .value_of("hash-input")
+            .map(|hex_str| decode_hex(&hex_str))
+            .transpose()?
+            .unwrap_or_else(|| unreachable!());
+        Ok(Self { algo, input })
+    }
+}
+
+impl<'a> TryFrom<&'a clap::ArgMatches<'a>> for SignArgs {
+    type Error = Error;
+    fn try_from(matches: &'a clap::ArgMatches) -> Result<Self> {
+        let secret = matches
+            .value_of("secret")
+            .map(|hex_str| decode_hex(&hex_str))
+            .transpose()?
+            .unwrap_or_else(|| unreachable!());
+        let algo = matches
+            .value_of("sign-algo")
+            .map(|value| match value {
+                "secp256k1" => secp256k1::SecretKey::from_slice(&secret[..])
+                    .map(SignAlgo::Secp256k1)
+                    .map_err(Error::Secp256k1),
+                _ => unreachable!(),
+            })
+            .transpose()?
+            .unwrap_or_else(|| unreachable!());
+        let input = matches
+            .value_of("sign-input")
+            .map(|hex_str| decode_hex(&hex_str))
+            .transpose()?
+            .unwrap_or_else(|| unreachable!());
+        Ok(Self { algo, input })
+    }
+}
+
 fn decode_hex(hex_str: &str) -> Result<Vec<u8>> {
     let hex_bytes = hex_str.as_bytes();
-    if &hex_bytes[0..2] != b"0x" || hex_str.len() % 2 != 0 || hex_bytes.len() % 2 != 0 {
+    if hex_str.len() % 2 != 0 || hex_bytes.len() % 2 != 0 {
         return Err(Error::Hex("the format of input is not right".to_owned()));
     }
-    let mut decoded = vec![0; (hex_bytes.len() >> 1) - 1];
-    faster_hex::hex_decode(&hex_bytes[2..], &mut decoded)
+    let mut decoded = vec![0; hex_bytes.len() >> 1];
+    faster_hex::hex_decode(&hex_bytes[..], &mut decoded)
         .map_err(|err| Error::Hex(err.to_string()))
         .map(|_| decoded)
 }

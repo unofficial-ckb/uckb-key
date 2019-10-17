@@ -7,4 +7,6 @@
 // except according to those terms.
 
 pub(crate) mod addr;
+pub(crate) mod hash;
 pub(crate) mod key;
+pub(crate) mod sign;

@@ -16,10 +16,12 @@ lazy_static! {
 
 mod public;
 mod secret;
+mod signature;
 
 pub use kernel::Error;
 pub use public::PublicKey;
 pub use secret::SecretKey;
+pub use signature::Signature;
 
 #[cfg(test)]
 mod tests;
