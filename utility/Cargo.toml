@@ -1,15 +1,15 @@
 [package]
-name = "ckb-key"
+name = "uckb-key"
 version = "0.1.0"
 authors = ["Boyu Yang <yangby@cryptape.com>"]
 edition = "2018"
 
 [dependencies]
-ckb-key-kernel = { version = "~0.1", path = "../kernel", default-features = false }
+uckb-key-kernel = { version = "~0.1", path = "../kernel", default-features = false }
 clap = { version = "~2.33", features = ["yaml"] }
 property = "~0.2"
 failure = "~0.1"
 faster-hex = "~0.4"
 
 [badges]
-travis-ci = { repository = "yangby-cryptape/ckb-key" }
+travis-ci = { repository = "unofficial-ckb/uckb-key" }

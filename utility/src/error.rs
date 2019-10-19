@@ -8,7 +8,7 @@
 
 use failure::Fail;
 
-use ckb_key_kernel::{address, secp256k1};
+use uckb_key_kernel::{address, secp256k1};
 
 #[derive(Debug, Fail)]
 pub(crate) enum Error {
