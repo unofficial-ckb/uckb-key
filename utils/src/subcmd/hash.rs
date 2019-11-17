@@ -6,7 +6,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use uckb_key_kernel::{blake2b, HashAlgo};
+use kernel::{blake2b, HashAlgo};
 
 use crate::config::HashArgs;
 

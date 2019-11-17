@@ -6,7 +6,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use uckb_key_kernel::SignAlgo;
+use kernel::SignAlgo;
 
 use crate::config::SignArgs;
 

@@ -1,11 +1,15 @@
 [package]
-name = "uckb-key"
+name = "uckb-key-utils"
 version = "0.1.0"
 authors = ["Boyu Yang <yangby@cryptape.com>"]
 edition = "2018"
 
+[[bin]]
+name = "uckb-key"
+path = "src/main.rs"
+
 [dependencies]
-uckb-key-kernel = { version = "~0.1", path = "../kernel", default-features = false }
+kernel = { package = "uckb-key", version = "~0.1", path = "../kernel", default-features = false }
 clap = { version = "~2.33", features = ["yaml"] }
 property = "~0.2"
 failure = "~0.1"

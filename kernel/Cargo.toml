@@ -1,5 +1,5 @@
 [package]
-name = "uckb-key-kernel"
+name = "uckb-key"
 version = "0.1.0"
 authors = ["Boyu Yang <yangby@cryptape.com>"]
 edition = "2018"

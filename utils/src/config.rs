@@ -10,7 +10,7 @@ use std::convert::TryFrom;
 
 use property::Property;
 
-use uckb_key_kernel::{address, secp256k1, HashAlgo, SignAlgo};
+use kernel::{address, secp256k1, HashAlgo, SignAlgo};
 
 use crate::error::{Error, Result};
 

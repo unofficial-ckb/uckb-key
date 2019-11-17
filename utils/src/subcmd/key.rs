@@ -6,7 +6,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use uckb_key_kernel::secp256k1;
+use kernel::secp256k1;
 
 use crate::config::KeyArgs;
 
