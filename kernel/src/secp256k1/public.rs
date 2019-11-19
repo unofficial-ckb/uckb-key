@@ -7,7 +7,7 @@
 // except according to those terms.
 
 use super::{kernel, Error, SecretKey, SECP256K1};
-use crate::{blake2b, PubKey};
+use crate::{blake2b, utilities, PubKey};
 
 #[derive(Clone, Copy, PartialOrd, Ord, PartialEq, Eq)]
 pub struct PublicKey(pub(super) kernel::PublicKey);
@@ -23,8 +23,7 @@ impl ::std::fmt::Debug for PublicKey {
 impl ::std::fmt::Display for PublicKey {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         let data = self.0.serialize();
-        let s = faster_hex::hex_string(&data).unwrap();
-        write!(f, "{}", s)
+        write!(f, "{}", utilities::hex_string(&data))
     }
 }
 

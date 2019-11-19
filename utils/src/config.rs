@@ -105,23 +105,35 @@ impl<'a> TryFrom<&'a clap::ArgMatches<'a>> for AddrArgs {
                 .value_of("code-hash")
                 .map(|data| decode_hex(data))
                 .transpose()?
-                .map(|content| address::CodeHash::Data { hash_type, content })
+                .map(|data| {
+                    if data.len() != 32 {
+                        Err(Error::Args("code hash should be 32 bytes".to_owned()))
+                    } else {
+                        let mut content = [0u8; 32];
+                        content.copy_from_slice(&data[..]);
+                        Ok(address::CodeHash::Data { hash_type, content })
+                    }
+                })
+                .transpose()?
                 .unwrap_or_else(|| unreachable!())
         };
         let args = matches
             .values_of("address-args")
-            .map(|values| values.collect())
-            .map(|args: Vec<&str>| {
-                args.iter()
-                    .map(|arg| decode_hex(arg))
-                    .collect::<Result<Vec<_>>>()
+            .map(|mut args| {
+                if args.len() == 1 {
+                    decode_hex(args.next().unwrap())
+                } else {
+                    Err(Error::Args(
+                        "there should be only one input of args".to_owned(),
+                    ))
+                }
             })
             .transpose()?
-            .unwrap_or_else(Vec::new);
-        let address = address::AddressBuilder::new(Vec::new())
+            .unwrap_or_else(|| unreachable!());
+        let address = address::AddressBuilder::new()
             .network(network)
             .code_hash(code_hash)
-            .args(args)
+            .args(address::Args::Simple(args))
             .build()?;
         Ok(Self { address })
     }

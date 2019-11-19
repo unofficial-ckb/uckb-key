@@ -45,8 +45,9 @@ subcommands:
                     - data
                     - type
             - address-args:
-                help: All arguments used to construct an address.
-                multiple: true
+                help: The arguments used to construct an address.
+                required: true
+                multiple: false
         groups:
             - addr-payload-format:
                 required: true

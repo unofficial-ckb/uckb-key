@@ -6,7 +6,10 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use crate::address::{Address, AddressBuilder, CodeHashIndex};
+use crate::{
+    address::{Address, AddressBuilder, CodeHashIndex, Network},
+    utilities,
+};
 
 pub enum PubKey {
     Secp256k1Blake160([u8; 20]),
@@ -23,10 +26,7 @@ impl ::std::fmt::Debug for PubKey {
 impl ::std::fmt::Display for PubKey {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         match *self {
-            Self::Secp256k1Blake160(ref data) => {
-                let s = faster_hex::hex_string(&data[..]).unwrap();
-                write!(f, "{}", s)
-            }
+            Self::Secp256k1Blake160(ref data) => write!(f, "{}", utilities::hex_string(data)),
         }
     }
 }
@@ -36,11 +36,17 @@ impl PubKey {
         Self::Secp256k1Blake160(data)
     }
 
-    pub fn address(&self) -> Address {
+    pub fn address(&self, mainnet: bool) -> Address {
+        let network = if mainnet {
+            Network::Main
+        } else {
+            Network::Test
+        };
         match *self {
             Self::Secp256k1Blake160(ref data) => AddressBuilder::default()
+                .network(network)
                 .code_hash_by_index(CodeHashIndex::Secp256k1Blake160)
-                .args(vec![data.to_vec()])
+                .args_simple(data.to_vec())
                 .build()
                 .unwrap(),
         }

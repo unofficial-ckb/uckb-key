@@ -10,17 +10,12 @@ use failure::Fail;
 
 #[derive(Debug, Fail)]
 pub enum Error {
-    #[fail(display = "there should be only one but found {} arguments", number)]
-    NotSingleArg { number: usize },
-    #[fail(display = "the size(={}) of hash is not match", length)]
-    HashSize { length: usize },
-    #[fail(
-        display = "the length(={}) of the No.{} argument is overflow",
-        length, index
-    )]
-    ArgOverflow { index: usize, length: usize },
+    #[fail(display = "internal error: should be unreachable, {}", _0)]
+    Unreachable(String),
+
     #[fail(display = "bech32 error: {}", _0)]
     Bech32(bech32::Error),
+
     #[fail(display = "unknown network: {}", _0)]
     UnknownNetwork(String),
     #[fail(display = "unknown payload format: {}", _0)]
@@ -29,6 +24,13 @@ pub enum Error {
     UnknownCodeHashIndex(u8),
     #[fail(display = "invalid data since offset {}", _0)]
     InvalidDataSince(usize),
+
+    #[fail(display = "args error: Secp256k1Blake160")]
+    Secp256k1Blake160Args,
+    #[fail(display = "args error: ShortFormatArgs")]
+    ShortFormatArgs,
+    #[fail(display = "args error: MultiSig")]
+    MultiSigArgs,
 }
 
 pub type Result<T> = ::std::result::Result<T, Error>;

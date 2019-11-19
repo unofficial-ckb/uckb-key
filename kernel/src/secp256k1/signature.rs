@@ -7,6 +7,7 @@
 // except according to those terms.
 
 use super::{kernel, Error};
+use crate::utilities;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub struct Signature(pub(super) kernel::recovery::RecoverableSignature);
@@ -22,8 +23,7 @@ impl ::std::fmt::Debug for Signature {
 impl ::std::fmt::Display for Signature {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         let bytes = self.to_bytes();
-        let s = faster_hex::hex_string(&bytes).unwrap();
-        write!(f, "{}", s)
+        write!(f, "{}", utilities::hex_string(&bytes))
     }
 }
 

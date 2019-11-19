@@ -12,6 +12,8 @@ use kernel::{address, secp256k1};
 
 #[derive(Debug, Fail)]
 pub(crate) enum Error {
+    #[fail(display = "arguments error: {}", _0)]
+    Args(String),
     #[fail(display = "hex error: {}", _0)]
     Hex(String),
     #[fail(display = "secp256k1 error: {}", _0)]
