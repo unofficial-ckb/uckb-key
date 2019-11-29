@@ -51,4 +51,10 @@ impl PubKeyHash {
                 .unwrap(),
         }
     }
+
+    pub fn as_slice(&self) -> &[u8] {
+        match *self {
+            Self::Secp256k1Blake160(ref data) => &data[..],
+        }
+    }
 }
