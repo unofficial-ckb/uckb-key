@@ -16,13 +16,13 @@ pub(crate) fn execute(args: KeyArgs) {
         .cloned()
         .unwrap_or_else(secp256k1::SecretKey::random);
     let pk = sk.public_key();
-    let key = pk.pubkey_blake160();
-    let addrm = key.address(true);
-    let addrt = key.address(false);
+    let pkh = pk.pkhash_blake160();
+    let addrm = pkh.address(true);
+    let addrt = pkh.address(false);
     println!("Secp256k1 + Blake160:\n");
     println!("    secret  = {}", sk);
     println!("    public  = {}", pk);
-    println!("    key     = {}", key);
+    println!("    pk-hash = {}", pkh);
     println!("    mainnet = {}", addrm);
     println!("    testnet = {}", addrt);
     println!(

@@ -9,8 +9,8 @@
 #[macro_use]
 mod utilities;
 
-mod pubkey;
-pub use pubkey::PubKey;
+mod pkhash;
+pub use pkhash::PubKeyHash;
 
 pub mod address;
 

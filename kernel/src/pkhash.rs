@@ -11,19 +11,19 @@ use crate::{
     utilities,
 };
 
-pub enum PubKey {
+pub enum PubKeyHash {
     Secp256k1Blake160([u8; 20]),
 }
 
-impl ::std::fmt::Debug for PubKey {
+impl ::std::fmt::Debug for PubKeyHash {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         match *self {
-            Self::Secp256k1Blake160(_) => write!(f, "PubKey::Secp256k1Blake160({})", self),
+            Self::Secp256k1Blake160(_) => write!(f, "PubKeyHash::Secp256k1Blake160({})", self),
         }
     }
 }
 
-impl ::std::fmt::Display for PubKey {
+impl ::std::fmt::Display for PubKeyHash {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         match *self {
             Self::Secp256k1Blake160(ref data) => write!(f, "{}", utilities::hex_string(data)),
@@ -31,13 +31,13 @@ impl ::std::fmt::Display for PubKey {
     }
 }
 
-impl PubKey {
+impl PubKeyHash {
     pub fn from_secp256k1_blake160(data: [u8; 20]) -> Self {
         Self::Secp256k1Blake160(data)
     }
 
-    pub fn address(&self, mainnet: bool) -> Address {
-        let network = if mainnet {
+    pub fn address(&self, is_mainnet: bool) -> Address {
+        let network = if is_mainnet {
             Network::Main
         } else {
             Network::Test

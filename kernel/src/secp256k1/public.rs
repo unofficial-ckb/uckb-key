@@ -7,7 +7,7 @@
 // except according to those terms.
 
 use super::{kernel, Error, SecretKey, SECP256K1};
-use crate::{blake2b, utilities, PubKey};
+use crate::{blake2b, utilities, PubKeyHash};
 
 #[derive(Clone, Copy, PartialOrd, Ord, PartialEq, Eq)]
 pub struct PublicKey(pub(super) kernel::PublicKey);
@@ -36,7 +36,7 @@ impl PublicKey {
         kernel::PublicKey::from_slice(data).map(Self)
     }
 
-    pub fn pubkey_blake160(&self) -> PubKey {
-        PubKey::from_secp256k1_blake160(blake2b::blake160(&self.0.serialize()[..]))
+    pub fn pkhash_blake160(&self) -> PubKeyHash {
+        PubKeyHash::from_secp256k1_blake160(blake2b::blake160(&self.0.serialize()[..]))
     }
 }
