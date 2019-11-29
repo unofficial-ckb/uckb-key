@@ -17,10 +17,14 @@ pub(crate) fn execute(args: KeyArgs) {
         .unwrap_or_else(secp256k1::SecretKey::random);
     let pk = sk.public_key();
     let key = pk.pubkey_blake160();
+    let addrm = key.address(true);
+    let addrt = key.address(false);
     println!("Secp256k1 + Blake160:\n");
     println!("    secret  = {}", sk);
     println!("    public  = {}", pk);
     println!("    key     = {}", key);
+    println!("    mainnet = {}", addrm);
+    println!("    testnet = {}", addrt);
     println!(
         "\nNOTICE:\n\n    \
          This utility is very simple, it just prints the secret key to the screen.\n\n    \
