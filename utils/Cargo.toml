@@ -11,7 +11,7 @@ path = "src/main.rs"
 [dependencies]
 kernel = { package = "uckb-key", version = "~0.1", path = "../kernel", default-features = false }
 clap = { version = "~2.33", features = ["yaml"] }
-property = "~0.2"
+property = "~0.3"
 failure = "~0.1"
 faster-hex = "~0.4"
 
