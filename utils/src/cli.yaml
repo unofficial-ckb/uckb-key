@@ -1,10 +1,8 @@
-name: CKB Key
-version: "0.1.0"
+name: uCKB Key
 about: |
     [Unofficial] Lightweight CKB key utilities.
-author: Boyu Yang <yangby@cryptape.com>
 settings:
-        - SubcommandRequired
+    - SubcommandRequired
 subcommands:
     - key:
         about: Generate a new key or parse an existed key.
@@ -14,6 +12,22 @@ subcommands:
                 long: secret
                 takes_value: true
                 required: false
+            - sign-algo:
+                help: The signature algorithm.
+                long: sign-algo
+                takes_value: true
+                possible_values:
+                    - secp256k1
+                default_value: secp256k1
+                required: true
+            - hash-algo:
+                help: The hash algorithm.
+                long: hash-algo
+                takes_value: true
+                possible_values:
+                    - blake2b256
+                default_value: blake2b256
+                required: true
     - addr:
         about: Generate or parse an address.
         args:

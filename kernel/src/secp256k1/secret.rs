@@ -1,4 +1,4 @@
-// Copyright (C) 2019 Boyu Yang
+// Copyright (C) 2019-2020 Boyu Yang
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -17,21 +17,21 @@ pub struct SecretKey(pub(super) kernel::SecretKey);
 
 impl_std_traits!(SecretKey, kernel::SecretKey);
 
-#[cfg(not(feature = "secure"))]
+#[cfg(feature = "insecure")]
 impl ::std::fmt::Debug for SecretKey {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         write!(f, "{:?}", self.0)
     }
 }
 
-#[cfg(not(feature = "secure"))]
+#[cfg(feature = "insecure")]
 impl ::std::fmt::Display for SecretKey {
     fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         write!(f, "{}", self.0)
     }
 }
 
-#[cfg(feature = "secure")]
+#[cfg(not(feature = "insecure"))]
 impl_std_fmt_masked!(SecretKey);
 
 impl SecretKey {

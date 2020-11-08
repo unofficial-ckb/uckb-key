@@ -1,4 +1,4 @@
-// Copyright (C) 2019 Boyu Yang
+// Copyright (C) 2019-2020 Boyu Yang
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -36,7 +36,7 @@ macro_rules! impl_std_traits {
     };
 }
 
-#[cfg(feature = "secure")]
+#[cfg(not(feature = "insecure"))]
 macro_rules! impl_std_fmt_masked {
     ($type:ident) => {
         impl ::std::fmt::Debug for $type {

@@ -3,17 +3,24 @@ name = "uckb-key-utils"
 version = "0.1.0"
 authors = ["Boyu Yang <yangby@cryptape.com>"]
 edition = "2018"
+description = "[Unofficial] Lightweight CKB key utilities."
+homepage = "https://github.com/unofficial-ckb/uckb-key"
+repository = "https://github.com/unofficial-ckb/uckb-key"
+keywords = []
+categories = []
+license = "Apache-2.0 OR MIT"
 
 [[bin]]
 name = "uckb-key"
 path = "src/main.rs"
 
 [dependencies]
-kernel = { package = "uckb-key", version = "~0.1", path = "../kernel", default-features = false }
-clap = { version = "~2.33", features = ["yaml"] }
-property = "~0.3"
-failure = "~0.1"
-faster-hex = "~0.4"
+kernel = { package = "uckb-key", version = "0.1.0", path = "../kernel", features = ["insecure"] }
+clap = { version = "2.33.3", features = ["yaml"] }
+property = "0.3.3"
+thiserror = "1.0.22"
+anyhow = "1.0.34"
+faster-hex = "0.4.1"
 
 [badges]
 travis-ci = { repository = "unofficial-ckb/uckb-key" }

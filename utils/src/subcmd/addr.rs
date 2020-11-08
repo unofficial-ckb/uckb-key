@@ -1,4 +1,4 @@
-// Copyright (C) 2019 Boyu Yang
+// Copyright (C) 2019-2020 Boyu Yang
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -6,8 +6,9 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-use crate::config::AddrArgs;
+use crate::{config::AddrArgs, error::Result};
 
-pub(crate) fn execute(args: AddrArgs) {
+pub(crate) fn execute(args: AddrArgs) -> Result<()> {
     println!("address = {}", args.address());
+    Ok(())
 }

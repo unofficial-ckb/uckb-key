@@ -1,4 +1,4 @@
-// Copyright (C) 2019 Boyu Yang
+// Copyright (C) 2019-2020 Boyu Yang
 //
 // Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
 // http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
@@ -23,7 +23,8 @@ pub(crate) enum AppConfig {
 
 #[derive(Property)]
 pub(crate) struct KeyArgs {
-    secret: Option<secp256k1::SecretKey>,
+    sign_algo: SignAlgo,
+    hash_algo: HashAlgo,
 }
 
 #[derive(Property)]
@@ -45,7 +46,10 @@ pub(crate) struct SignArgs {
 
 pub(crate) fn build_commandline() -> Result<AppConfig> {
     let yaml = clap::load_yaml!("cli.yaml");
-    let matches = clap::App::from_yaml(yaml).get_matches();
+    let matches = clap::App::from_yaml(yaml)
+        .version(clap::crate_version!())
+        .author(clap::crate_authors!("\n"))
+        .get_matches();
     AppConfig::try_from(&matches)
 }
 
@@ -65,13 +69,35 @@ impl<'a> TryFrom<&'a clap::ArgMatches<'a>> for AppConfig {
 impl<'a> TryFrom<&'a clap::ArgMatches<'a>> for KeyArgs {
     type Error = Error;
     fn try_from(matches: &'a clap::ArgMatches) -> Result<Self> {
-        let secret = matches
+        let secret_opt = matches
             .value_of("secret")
             .map(|hex_str| decode_hex(&hex_str))
-            .transpose()?
-            .map(|data| secp256k1::SecretKey::from_slice(&data[..]))
             .transpose()?;
-        Ok(Self { secret })
+        let sign_algo = matches
+            .value_of("sign-algo")
+            .map(|value| match value {
+                "secp256k1" => secret_opt
+                    .map(|secret| {
+                        secp256k1::SecretKey::from_slice(&secret[..])
+                            .map(SignAlgo::Secp256k1)
+                            .map_err(Error::Secp256k1)
+                    })
+                    .unwrap_or_else(|| Ok(SignAlgo::Secp256k1(secp256k1::SecretKey::random()))),
+                _ => unreachable!(),
+            })
+            .transpose()?
+            .unwrap_or_else(|| unreachable!());
+        let hash_algo = matches
+            .value_of("hash-algo")
+            .map(|value| match value {
+                "blake2b256" => HashAlgo::Blake2b256,
+                _ => unreachable!(),
+            })
+            .unwrap_or_else(|| unreachable!());
+        Ok(Self {
+            sign_algo,
+            hash_algo,
+        })
     }
 }
 
