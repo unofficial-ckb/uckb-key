@@ -26,6 +26,3 @@ slices = "0.1.1"
 [features]
 default = []
 insecure = []
-
-[badges]
-travis-ci = { repository = "unofficial-ckb/uckb-key" }

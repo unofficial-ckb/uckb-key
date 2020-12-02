@@ -21,6 +21,3 @@ property = "0.3.3"
 thiserror = "1.0.22"
 anyhow = "1.0.34"
 faster-hex = "0.4.1"
-
-[badges]
-travis-ci = { repository = "unofficial-ckb/uckb-key" }
