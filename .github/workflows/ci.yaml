@@ -11,6 +11,8 @@ env:
   CARGO_TERM_COLOR: always
   RUSTFLAGS: -F warnings
   RUST_BACKTRACE: full
+  RUST_TOOLCHAIN: 1.53.0
+  MSRV: 1.40.0
 jobs:
   rustfmt:
     name: Checks / Format
@@ -18,7 +20,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup
-        run: cargo fmt --version || rustup component add rustfmt
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: ${{ env.RUST_TOOLCHAIN }}
+          override: true
+          components: rustfmt
       - name: Run
         run: cargo fmt --all -- --check
   clippy:
@@ -27,7 +34,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup
-        run: cargo clippy --version || rustup component add clippy
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: ${{ env.RUST_TOOLCHAIN }}
+          override: true
+          components: clippy
       - name: Run
         run: cargo clippy -- --deny warnings
   cargo-deny:
@@ -55,22 +67,42 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        build: [ linux ]
-        include:
-          - build: linux
-            os: ubuntu-latest
-            rust: 1.48.0
-          #- build: windows
-          #  os: windows-latest
-          #  rust: 1.48.0
-          #- build: macos
-          #  os: macos-latest
-          #  rust: 1.48.0
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
       fail-fast: true
       max-parallel: 3
     steps:
       - uses: actions/checkout@v2
+      - name: Setup
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: ${{ env.RUST_TOOLCHAIN }}
+          override: true
       - name: Build
         run: cargo build --verbose --all
       - name: Test
         run: cargo test --verbose --all
+  msrv:
+    name: Tests / Build & Test (MSRV)
+    needs: [ rustfmt, clippy ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: ${{ env.MSRV }}
+          override: true
+      - name: Build
+        run: cargo build --verbose --all
+      - name: Test
+        run: cargo test --verbose --all
+  success:
+    name: Success
+    if: ${{ success() }}
+    needs: [ cargo-deny, test, msrv ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Succeed
+        run: exit 0

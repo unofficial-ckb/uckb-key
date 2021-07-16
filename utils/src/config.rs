@@ -217,7 +217,7 @@ fn decode_hex(hex_str: &str) -> Result<Vec<u8>> {
         return Err(Error::Hex("the format of input is not right".to_owned()));
     }
     let mut decoded = vec![0; hex_bytes.len() >> 1];
-    faster_hex::hex_decode(&hex_bytes[..], &mut decoded)
+    faster_hex::hex_decode(hex_bytes, &mut decoded)
         .map_err(|err| Error::Hex(err.to_string()))
         .map(|_| decoded)
 }

@@ -54,5 +54,5 @@ macro_rules! impl_std_fmt_masked {
 }
 
 pub fn hex_string(bin: &[u8]) -> String {
-    faster_hex::hex_string(&bin[..]).unwrap()
+    faster_hex::hex_string(bin).unwrap()
 }

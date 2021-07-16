@@ -33,7 +33,7 @@ impl Signature {
         kernel::recovery::RecoverableSignature::from_compact(&bytes[..64], id).map(Self)
     }
 
-    pub fn to_bytes(&self) -> [u8; 65] {
+    pub fn to_bytes(self) -> [u8; 65] {
         let (id, data) = self.serialize_compact();
         let mut bytes = [0; 65];
         bytes[0..64].copy_from_slice(&data[0..64]);
